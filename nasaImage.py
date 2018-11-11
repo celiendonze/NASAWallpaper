@@ -6,7 +6,6 @@ from PIL import ImageFont
 from PIL import ImageDraw 
 import requests
 from io import BytesIO
-import numpy as np
 import ctypes
 import sys
 from os.path import expanduser
@@ -45,7 +44,8 @@ if __name__ == "__main__":
     response = requests.get(imageUrl)
     img = Image.open(BytesIO(response.content))
 
-    width, height = 1920, 1080
+    user32 = ctypes.windll.user32
+    width, height = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
     img.thumbnail((width,height), Image.BICUBIC)
 
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     
     img.save(path)
     
-    ctypes.windll.user32.SystemParametersInfoW(20, 0, path , 0)
+    user32.SystemParametersInfoW(20, 0, path , 0)
 
     print("New image set as wallpaper.")
     print(title)
