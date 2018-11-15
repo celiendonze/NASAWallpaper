@@ -12,9 +12,9 @@ from os.path import expanduser
 
 def drawTitle(title, img):
     width, height = img.size
-
+    fontSize = width//len(title)*2
     draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype("arial.ttf", 50)
+    font = ImageFont.truetype("arial.ttf", fontSize)
     w, h = draw.textsize(title, font)
     x = (width-w)//2
     y = (height-h)//16
@@ -44,18 +44,13 @@ if __name__ == "__main__":
     response = requests.get(imageUrl)
     img = Image.open(BytesIO(response.content))
 
-    user32 = ctypes.windll.user32
-    width, height = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
-
-    img.thumbnail((width,height), Image.BICUBIC)
-
     drawTitle(title, img)
     
     path = expanduser(r"~\Pictures") + r"\wallpaper.jpg"
     
     img.save(path)
-    
-    user32.SystemParametersInfoW(20, 0, path , 0)
+
+    ctypes.windll.user32.SystemParametersInfoW(20, 0, path , 0)
 
     print("New image set as wallpaper.")
     print(title)
